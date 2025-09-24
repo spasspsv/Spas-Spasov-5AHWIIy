@@ -26,7 +26,7 @@ model Question {
 
 model Answer {
     id               String   @id @default(cuid())
-    answer           String
+    answer           String   @unique
     correctQuestions Question[] @relation("CorrectAnswer")
     incorrectQuestions Question[] @relation("IncorrectAnswers")
     createdAt        DateTime @default(now())
