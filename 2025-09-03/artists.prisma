@@ -20,12 +20,12 @@ model Instrument {
     id                  String   @id @default(cuid())
     name                String   @unique
     type                String
-    Artist              Artist[]
+    artists             Artist[]
 }
 
 model Style {
     id                  String   @id @default(cuid())
-    name                String
+    name                String   @unique
     Artist              Artist[]
 }
 
