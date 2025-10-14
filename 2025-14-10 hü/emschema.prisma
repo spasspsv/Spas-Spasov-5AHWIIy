@@ -1,0 +1,45 @@
+datasource db {
+    provider = "sqlite"
+    url      = "file:./dev.sqlite3"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Player {
+    id              String   @id @unique @default(cuid())
+    vorname         String   @unique
+    nachname        String?
+    rueckennummer   String?
+
+    Mannschaft      Mannschaft[]
+}
+
+model Mannschaft {
+    id        String   @id @unique @default(cuid())
+    name      String   @unique
+
+    players   Player[]
+}
+
+model Match {
+    id      String   @id @unique @default(cuid())
+    teamA   String
+    teamB   String
+    datum   DateTime
+    toreA   Int
+    toreB   Int
+    stadt   String
+
+
+    Stadion Stadion[]
+}
+
+model Stadion {
+    id      String   @id @unique @default(cuid())
+    name    String
+    stadt   String
+
+    matches Match[]
+}
