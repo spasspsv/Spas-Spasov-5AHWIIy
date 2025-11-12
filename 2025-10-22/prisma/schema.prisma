@@ -1,0 +1,72 @@
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client"
+    output   = "client"
+    runtime  = "deno"
+}
+
+model Aircraft {
+    id                  String   @id @default(cuid())
+    capacity            Int
+    model               String
+    Hangar_AirportId    String
+    Hangar_Airport      Airport  @relation(fields: [Hangar_AirportId], references: [id])
+    AirlineId           String
+    airline             Airline  @relation(fields: [AirlineId], references: [id])
+
+    flights             Flight[]
+}
+
+model Airport {
+    id        String   @id @default(cuid())
+    name      String
+    city      String
+    iataCode  String   @unique
+
+    departures Flight[] @relation(name: "Departures")
+    arrivals   Flight[] @relation(name: "Arrivals")
+
+    Aircraft Aircraft[]
+}
+
+model Passenger {
+    id        String   @id @default(cuid())
+    firstName String
+    lastName  String
+    email     String   @unique
+    flights   Flight[] @relation(name: "PassengerFlights")
+}
+
+model Airline {
+    id        String   @id @default(cuid())
+    name      String   @unique
+
+    flights   Flight[]
+
+    Aircraft Aircraft[]
+}
+
+model Flight {
+    id             String     @id @default(cuid())
+    flightNumber   String     @unique
+    departureTime  DateTime
+    arrivalTime    DateTime
+
+    aircraftId     String
+    aircraft       Aircraft   @relation(fields: [aircraftId], references: [id])
+
+    airlineId      String
+    airline        Airline    @relation(fields: [airlineId], references: [id])
+
+    departureAirportId String
+    departureAirport   Airport   @relation(name: "Departures", fields: [departureAirportId], references: [id])
+
+    arrivalAirportId   String
+    arrivalAirport     Airport   @relation(name: "Arrivals", fields: [arrivalAirportId], references: [id])
+
+    Passenger Passenger[] @relation(name: "PassengerFlights")
+}
